@@ -20,3 +20,10 @@ Select the video according to the value of your index, for example: '7'. This wi
 ![Sample output](http://img.ctrlv.in/img/17/01/19/588122f36e095.png)
 
 Select one of the available resolutions in brackets and the video will be downloaded.
+
+# Warranty
+No author/developer warranty is offered for this software.
+
+Remember:
+* The author/developer also expresses that he does not apologize for the download of copyrighted videos;
+* Respect the copyright.
