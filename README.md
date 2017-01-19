@@ -5,7 +5,7 @@ With this script in Bash you can search and download videos available on the Mai
 
 Set the script to be executable:
 
-`````````````$ chmod u+ x mailru-dl`````````````
+`````````````$ chmod u+x mailru-dl`````````````
 
 Run the script by passing the terms of your search as a parameter, in the example below 'javascript' is used:
 
