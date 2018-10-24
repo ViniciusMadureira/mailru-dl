@@ -2,7 +2,7 @@
 # Author: Vinícius Madureira <contato@viniciusmadureira.com>
 # Version: 0.1
 # Date: January 17, 2017
-# Script: Bash MailRu Video Downloader (mailru-dl)
+# Script: Bash MailRu Downloader (mailru-dl)
 # Dependencies: GNU bash 4.3.42(1); GNU coreutils 8.24; curl 7.43.0; GNU Wget 1.18; GNU grep 2.22; GNU sed 4.2.2
 : '
 
@@ -40,10 +40,10 @@ function download() {
 	page="http://"$(echo "$1" | grep -Po "(?i)my\..*")
 	title="$2"
 	jsonUrl="http://videoapi.my.mail.ru/videos/"$(echo "$page" | sed -e 's/http:\/\/my.mail.ru\///g' -e 's/\/video\//\//g' -e 's/\.html/\.json/g')
-	jsonContent=$(curl --silent --cookie-jar cookies.txt  $jsonUrl)
+	jsonContent=$(curl --silent --cookie-jar cookies.txt  $jsonUrl --location)
 	jsonVideos=$(echo $jsonContent | grep -Pio "\"videos.*]")
 	IFS=' ' read -r -a resolutions <<< $(echo $jsonVideos | grep -Pio "\d+p")
-	IFS=' ' read -r -a videos <<< $(echo $jsonVideos | grep -Pio "(?U)http.*region=(?-U)\d+")
+	IFS=' ' read -r -a videos <<< $(echo $jsonVideos | grep -Pio "(?U)(?<=\"url\":\"\/\/)\w+\.my.mail.*(?=\")")
 	choice=$((${#resolutions} + 1))
 	while [[ $choice -lt 1 || $((${#resolutions} - 1)) -le $choice || -z $choice ]]; do
 		reset
@@ -54,10 +54,10 @@ function download() {
 		echo -e "Type a number between brackets like [1]:"
 		read choice
 	done
-	echo -e "Downloading $title.mp4..."
+	echo -e "Downloading \"$title.mp4...\""
 	state=8
 	while [[ !state -eq 0 ]]; do
-		wget -c --progress=bar:force ${videos[$((choice - 1))]} --load-cookies="cookies.txt" -O "$title.mp4" 2>&1 | hideDownloadVerbose
+		wget --continue --progress=bar:force "${videos[$((choice - 1))]}" --load-cookies="cookies.txt" -O "$title.mp4" 2>&1 | hideDownloadVerbose
 		state=$(echo $?)
 	done
 	rm -rf "cookies.txt"
@@ -85,7 +85,7 @@ function printVideos() {
 	fi
 }
 
-baseUrl="http://m.my.mail.ru/video/search"
+baseUrl="https://m.my.mail.ru/video/search"
 offset=0
 urls=()
 titles=()
